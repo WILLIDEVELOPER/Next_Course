@@ -20,6 +20,9 @@ npx prisma generate
 
 ```
 
+# Nota:
+Usuario: admin@google.com
+Contraseña: admin
 
 
 # Prod

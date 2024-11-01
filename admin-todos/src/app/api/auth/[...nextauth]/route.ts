@@ -2,9 +2,11 @@ import prisma from "@/lib/prisma";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import { Adapter } from "next-auth/adapters";
+
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
+
 import { signInEmailPassword } from "@/auth/actions/auth-actions";
 
 export const authOptions: NextAuthOptions = {
@@ -14,10 +16,12 @@ export const authOptions: NextAuthOptions = {
       clientId: process.env.GOOGLE_CLIENT_ID ?? "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
     }),
+
     GithubProvider({
       clientId: process.env.GITHUB_ID ?? "",
       clientSecret: process.env.GITHUB_SECRET ?? "",
     }),
+
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -47,8 +51,6 @@ export const authOptions: NextAuthOptions = {
         return null;
       },
     }),
-
-    // ...add more providers here
   ],
 
   session: {
@@ -57,22 +59,21 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
+      // console.log({user});
       return true;
     },
 
     async jwt({ token, user, account, profile }) {
+      // console.log({ token });
       const dbUser = await prisma.user.findUnique({
-        where: {
-          email: user.email ?? "No-Email",
-        },
+        where: { email: token.email ?? "no-email" },
       });
-
       if (dbUser?.isActive === false) {
-        throw new Error("El usuario no esta activo");
+        throw Error("Usuario no está activo");
       }
 
-      token.roles = dbUser?.roles ?? ["No-roles"];
-      token.id = dbUser?.id ?? "No-id";
+      token.roles = dbUser?.roles ?? ["no-roles"];
+      token.id = dbUser?.id ?? "no-uuid";
 
       return token;
     },
