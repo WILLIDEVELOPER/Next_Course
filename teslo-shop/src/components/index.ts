@@ -4,3 +4,7 @@ export * from "./title/Title";
 export * from "./products/product-grid/ProductGrid";
 export * from "./products/product-grid/ProductGridItem";
 export * from "./ui/sidebar/Sidebar";
+export * from "./products/product/size-selector/SizeSelector";
+export * from "./products/product/quantity-selector/QuantitySelector";
+export * from "./products/product/slideshow/ProductSlideshow";
+export * from "./ui/footer/Footer";
