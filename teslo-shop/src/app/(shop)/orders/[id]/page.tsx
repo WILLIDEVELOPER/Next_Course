@@ -1,4 +1,3 @@
-
 import { Title } from "@/components";
 import { initialData } from "@/seed/seed";
 import Image from "next/image";
@@ -11,15 +10,15 @@ const productsInCart = [
   initialData.products[2],
 ];
 
-interface Props {
-  params: {
-    id: string;
-  };
-}
+type Props = {
+  params: Promise<{ id: string }>;
+};
 
-export default function OrderPage({ params }: Props) {
-  const { id } = params;
-  // Todo: verificar si el id existe en la base de datos, redirect a la página de error si no existe
+// Componente principal de la página de la orden
+export default async function OrderPage({ params }: Props) {
+  const { id } = await params;
+
+  // Aquí podrías verificar si el id existe en la base de datos y redirigir si no existe
 
   return (
     <div className="flex justify-center items-center mb-72 px-10 sm:px-0">
@@ -39,7 +38,7 @@ export default function OrderPage({ params }: Props) {
               )}
             >
               <IoCardOutline size={30} />
-              <span className="mx-2">{/*Pendiente de pago*/} Pagada</span>
+              <span className="mx-2">Pagada</span>
             </div>
 
             {/* Items */}
@@ -109,7 +108,7 @@ export default function OrderPage({ params }: Props) {
                 )}
               >
                 <IoCardOutline size={30} />
-                <span className="mx-2">{/*Pendiente de pago*/} Pagada</span>
+                <span className="mx-2">Pagada</span>
               </div>
             </div>
           </div>
