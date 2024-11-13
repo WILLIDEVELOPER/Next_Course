@@ -10,3 +10,4 @@ export * from "./ui/pagination/Pagination";
 export * from "./ui/top-menu/TopMenu";
 export * from "./ui/not-found/PageNotFound";
 export * from "./ui/sidebar/Sidebar";
+export * from "./provider/Provider";
