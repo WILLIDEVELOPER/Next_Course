@@ -1,5 +1,6 @@
 "use client";
 import { Country } from "@/interfaces";
+import { useAddressStore } from "@/store/address/address-store";
 import clsx from "clsx";
 import { useForm } from "react-hook-form";
 
@@ -30,8 +31,11 @@ export const AddressForm = ({ countries }: Props) => {
     },
   });
 
+  const { setAddress } = useAddressStore();
+
   const onSubmit = (data: FormInputs) => {
     console.log(data);
+    setAddress(data);
   };
 
   return (
