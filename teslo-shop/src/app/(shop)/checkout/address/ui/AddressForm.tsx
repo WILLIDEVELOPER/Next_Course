@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { deleteUserAddress, setUserAddress } from "@/actions";
-import { Country } from "@/interfaces";
+import { Address, Country } from "@/interfaces";
 import { useAddressStore } from "@/store/address/address-store";
 import clsx from "clsx";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
@@ -11,7 +13,7 @@ type FormInputs = {
   firstName: string;
   lastName: string;
   address: string;
-  address2: string;
+  address2?: string;
   postalCode: string;
   city: string;
   country: string;
@@ -21,9 +23,10 @@ type FormInputs = {
 
 interface Props {
   countries: Country[];
+  userStoredAddress?: Partial<Address>;
 }
 
-export const AddressForm = ({ countries }: Props) => {
+export const AddressForm = ({ countries, userStoredAddress = {} }: Props) => {
   const {
     register,
     handleSubmit,
@@ -31,9 +34,12 @@ export const AddressForm = ({ countries }: Props) => {
     reset,
   } = useForm<FormInputs>({
     defaultValues: {
-      //Todo: leer la base de datos y poner los datos
+      ...(userStoredAddress as any),
+      rememberAddress: false,
     },
   });
+
+  const router = useRouter();
 
   const { data: session } = useSession({
     required: true,
@@ -47,16 +53,17 @@ export const AddressForm = ({ countries }: Props) => {
     }
   }, []);
 
-  const onSubmit = (data: FormInputs) => {
-    console.log(data);
+  const onSubmit = async (data: FormInputs) => {
     setAddress(data);
     const { rememberAddress, ...restAddress } = data;
 
     if (rememberAddress) {
-      setUserAddress(restAddress, session!.user.id);
+      await setUserAddress(restAddress, session!.user.id);
     } else {
-      deleteUserAddress(session!.user.id);
+      await deleteUserAddress(session!.user.id);
     }
+
+    router.push("/checkout");
   };
 
   return (
